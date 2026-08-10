@@ -285,6 +285,16 @@ def get_tier_dim_info(name, tier_df, dim_df):
     return t1, t2, t3, t4, final, dimensions
 
 
+def expander_scores(container, final, t1, t2, t3, t4, dimensions):
+    container.write(f'**Final Score**: {round(final, 2)}')
+    container.write(f'**Tier 1**: {round(t1, 2)}')
+    container.write(f'**Tier 2**: {round(t2, 2)}')
+    container.write(f'**Tier 3**: {round(t3, 2)}')
+    container.write(f'**Tier 4**: {round(t4, 2)}')
+    for dim_name, dimension in zip(dim_categories, dimensions):
+        container.write(f'**{dim_name}**: {round(dimension, 2)}')
+
+
 dim_df = pd.read_csv(
     '/Users/serenalu/physician_scientist_dash/dimension_score_breakdown.csv')
 tier_df = pd.read_csv(
@@ -342,10 +352,13 @@ for i in range(n_scientists):
             results = st.container(border=True)
 
             results.header(f'Impact score for {selected_physician}')
-            results.write(f'Final Score = {final}')
             left, right = results.columns(2)
             left.plotly_chart(tier_radar)
             right.plotly_chart(dim_radar)
+
+            sci_stats = st.expander('Detailed Scoring')
+            sci_stats.subheader('Scores Without Weighing')
+            expander_scores(sci_stats, final, t1, t2, t3, t4, dimensions)
 
         except:
             st.subheader(':red[**Please pick a different scientist**]',)
@@ -390,3 +403,15 @@ if n_comparisons > 0:
         left2, right2 = comparisons.columns(2)
         left2.plotly_chart(compare_tier_chart, width='stretch')
         right2.plotly_chart(compare_dim_chart, width='stretch')
+
+        half = len(tier_dict) // 2
+        compare_stats = st.expander('Scores per Scientist')
+        left, right = compare_stats.columns(2)
+        for name in list(tier_dict.keys())[0:half]:
+            left.subheader(f'{name}\'s Scores')
+            expander_scores(left, tier_dict[name][4], tier_dict[name][0], tier_dict[name][1],
+                            tier_dict[name][2], tier_dict[name][3], dim_dict[name])
+        for name in list(tier_dict.keys())[half:]:
+            right.subheader(f'{name}\'s Scores')
+            expander_scores(right, tier_dict[name][4], tier_dict[name][0], tier_dict[name][1],
+                            tier_dict[name][2], tier_dict[name][3], dim_dict[name])
