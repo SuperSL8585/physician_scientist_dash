@@ -1,7 +1,7 @@
 import streamlit as st
-import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
+import os
 
 physician_scientists = [
     "Dennis Slamon",
@@ -295,10 +295,11 @@ def expander_scores(container, final, t1, t2, t3, t4, dimensions):
         container.write(f'**{dim_name}**: {round(dimension, 2)}')
 
 
-dim_df = pd.read_csv(
-    '/Users/serenalu/physician_scientist_dash/dimension_score_breakdown.csv')
-tier_df = pd.read_csv(
-    '/Users/serenalu/physician_scientist_dash/final_score-3.csv')
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+dim_df = pd.read_csv(os.path.join(BASE_DIR, "dimension_score_breakdown.csv"))
+tier_df = pd.read_csv(os.path.join(BASE_DIR, "final_score-3.csv"))
+
 tier_weights = []
 
 # ==========================
