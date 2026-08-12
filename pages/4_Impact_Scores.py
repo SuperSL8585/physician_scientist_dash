@@ -305,9 +305,9 @@ tier_weights = []
 # ==========================
 # Main Page
 # ==========================
-st.set_page_config(layout='wide')
+st.set_page_config(page_title='Scientist Impact Scores', layout='wide')
 
-st.title('Dashboard for Physician Scientist Research Group')
+st.title('Dashboard for Physician Scientist Research Group- Individual Impact Scores')
 
 n_scientists = st.sidebar.number_input(
     'Please input how many scientists you\'d like to observe scores:',
